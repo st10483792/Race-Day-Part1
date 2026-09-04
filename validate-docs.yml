@@ -1,0 +1,42 @@
+name: RaceDay Part 1 Documentation Validation
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate required Part 1 files
+        shell: bash
+        run: |
+          set -e
+          test -d docs
+          test -f docs/RaceDay_ERD.png
+          test -f docs/RaceDay_API_Endpoint_Plan.md
+          test -f docs/RaceDay_Database.sql
+          echo "RaceDay Part 1 documentation structure is valid."
+
+      - name: Validate SQL contains required objects
+        shell: bash
+        run: |
+          grep -q "CREATE TABLE Users" docs/RaceDay_Database.sql
+          grep -q "CREATE TABLE Events" docs/RaceDay_Database.sql
+          grep -q "CREATE TABLE Categories" docs/RaceDay_Database.sql
+          grep -q "CREATE TABLE Enrolments" docs/RaceDay_Database.sql
+          grep -q "CREATE TABLE Results" docs/RaceDay_Database.sql
+          echo "SQL structure checks passed."
+
+      - name: Validate API plan sections
+        shell: bash
+        run: |
+          grep -q "Authentication" docs/RaceDay_API_Endpoint_Plan.md
+          grep -q "Events" docs/RaceDay_API_Endpoint_Plan.md
+          grep -q "Categories" docs/RaceDay_API_Endpoint_Plan.md
+          grep -q "Enrolments" docs/RaceDay_API_Endpoint_Plan.md
+          grep -q "Results" docs/RaceDay_API_Endpoint_Plan.md
+          echo "API plan checks passed."
